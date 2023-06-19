@@ -1,0 +1,46 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: '3.1'
+services:
+    redis:
+        image: 'redis:alpine'
+
+    typesense:
+        image: typesense/typesense:0.24.0
+        restart: on-failure
+        ports:
+            - "61002:8108"
+        volumes:
+            - ./.docker/typesense-data:/data
+        command: '--data-dir /data --api-key=xyz --enable-cors'
+
+    mariadb:
+        image: 'mariadb:10.10'
+        working_dir: /application
+        volumes:
+            - './app:/application'
+            - './.docker/mariadb/data:/var/lib/mysql'
+        environment:
+            - MYSQL_ROOT_PASSWORD=iska
+            - MYSQL_DATABASE=redoc_ticko
+            - MYSQL_USER=redoc_azk
+            - MYSQL_PASSWORD=redoc_maya
+        ports:
+            - '61003:3306'
+
+    webserver:
+        image: 'nginx:alpine'
+        working_dir: /application
+        volumes:
+            - './app:/application'
+            - './phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
+        ports:
+            - '61000:80'
+
+    php-fpm:
+        build: phpdocker/php-fpm
+        working_dir: /application
+        volumes:
+            - './app:/application'
+            - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.2/fpm/conf.d/99-overrides.ini'
