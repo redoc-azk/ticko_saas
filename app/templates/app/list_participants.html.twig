@@ -1,0 +1,78 @@
+{% extends 'app/_base.html.twig' %}
+
+{% block body_content %}
+
+    <div class="page-title"> <i class="icon-custom-left"></i>
+        <h3><span class="semi-bold">Accueil</span></h3>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="grid simple ">
+                <div class="grid-title no-border">
+                    <div class="tools">
+                        <a href="javascript:;" class="collapse"></a>
+                        <a href="#grid-config" data-toggle="modal" class="config"></a>
+                        <a href="javascript:;" class="reload"></a>
+                        <a href="javascript:;" class="remove"></a>
+                    </div>
+                </div>
+                <div class="grid-body no-border">
+                    <h3>Liste des  <span class="semi-bold">inscrits</span></h3>
+                    <table class="table no-more-tables table-hover">
+                        <thead>
+                        <tr>
+                            <th style="width:16%">Nom & Prénoms</th>
+                            <th style="width:14%">Email</th>
+                            <th style="width:14%">Genre</th>
+                            <th style="width:14%">Profession</th>
+                            <th style="width:14%">Entreprise</th>
+                            <th style="width:14%">Date d'inscription</th>
+                            <th style="width:14%">Consulter</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for p in participants %}
+                            <tr>
+                                <td class="v-align-middle">
+                                    {{ p.NomPrenoms }}
+                                </td>
+                                <td class="v-align-middle">
+                                    <span class="muted">
+                                    {{ p.email }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="muted">
+                                        {{ p.sexe }}
+                                    </span>
+                                </td>
+                                <td class="v-align-middle">
+                                    <span class="muted">
+                                        {{ p.profession }}
+                                    </span>
+                                </td>
+                                <td><span class="muted">
+                                    <span class="muted">
+                                        {{ p.entreprise }}
+                                    </span>
+                                    </span>
+                                </td>
+                                <td><span class="muted">
+                                    <span class="muted">
+                                        {{ p.createdAt | date('d/m/Y H:i:s') }}
+                                    </span>
+                                    </span>
+                                </td>
+                                <td><span class="muted">
+                                        <button type="button" class="btn btn-success btn-cons">Consulter</button>
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

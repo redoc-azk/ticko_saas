@@ -29,6 +29,15 @@ services:
         ports:
             - '61003:3306'
 
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        restart: always
+        ports:
+            - "61004:80"
+        environment:
+            - PMA_ARBITRARY=1
+            - PMA_HOST=mariadb
+
     webserver:
         image: 'nginx:alpine'
         working_dir: /application
