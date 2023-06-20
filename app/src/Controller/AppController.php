@@ -26,6 +26,9 @@ class AppController extends AbstractController
             return $this->json([
                 'status' => 'success',
                 'message' => 'Inscription effectuée avec succès',
+            ], 201, [
+                // Access-Control-Allow-Origin for all origins
+                'Access-Control-Allow-Origin' => '*',
             ]);
         }catch (\Exception $e){
             return $this->json([
