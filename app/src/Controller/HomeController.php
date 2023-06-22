@@ -7,6 +7,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -16,8 +17,12 @@ class HomeController extends AbstractController
     public function index(
         EntityManagerInterface $em,
         UserPasswordHasherInterface $passwordHasher
-    ): JsonResponse
+    ): Response
     {
+        // if env is prod then redirect to /login
+        if($this->getParameter('kernel.environment') === 'prod'){
+            return $this->redirectToRoute('app_login');
+        }
         $user = (new User())
             ->setEmail('az@az.com')
             ->setPrenoms('AZ')
