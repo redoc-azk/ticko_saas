@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ParticipantsRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: ParticipantsRepository::class)]
@@ -14,6 +15,9 @@ class Participants
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $scanCode = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom_prenoms = null;
@@ -61,6 +65,8 @@ class Participants
     public function prePersist(): void
     {
         $this->createdAt = new \DateTimeImmutable();
+        // uuid v4 for scanCode
+        $this->scanCode = Uuid::v4();
     }
 
     #[ORM\PreUpdate]
@@ -239,6 +245,18 @@ class Participants
     {
         $this->scannedBy = $scannedBy;
         $this->scannedAt = new \DateTimeImmutable();
+        return $this;
+    }
+
+    public function getScanCode(): ?string
+    {
+        return $this->scanCode;
+    }
+
+    public function setScanCode(string $scanCode): static
+    {
+        $this->scanCode = $scanCode;
+
         return $this;
     }
 }

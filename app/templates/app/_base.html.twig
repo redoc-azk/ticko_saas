@@ -170,10 +170,6 @@
             <!-- BEGIN MINI-PROFILE -->
             <div class="page-sidebar-wrapper scrollbar-dynamic" id="main-menu-wrapper">
                 <div class="user-info-wrapper sm">
-                    <div class="profile-wrapper sm">
-                        <img src="{{ asset('assets/img/profiles/avatar.jpg') }}" alt="" data-src="assets/img/profiles/avatar.jpg" data-src-retina="assets/img/profiles/avatar2x.jpg" width="69" height="69" />
-                        <div class="availability-bubble online"></div>
-                    </div>
                     <div class="user-info sm">
                         <div class="username">{{ app.user.nom }} <span class="semi-bold">{{ app.user.prenoms }}</span></div>
                     </div>
@@ -194,7 +190,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ path('app_home') }}">
+                        <a href="{{ path('app_scanner') }}">
                             <span class="title">QR Scanner</span>
                         </a>
                     </li>
@@ -225,7 +221,9 @@
             </div>
             <div class="clearfix"></div>
             <div class="content">
-                {% block body_content %}{% endblock %}
+                <turbo-frame id="turbo-main">
+                    {% block body_content %}{% endblock %}
+                </turbo-frame>
             </div>
         </div>
         <!-- BEGIN CHAT -->

@@ -1,3 +1,4 @@
+import './bootstrap.js';
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -7,3 +8,10 @@
 
 // any CSS you import will output into a single css file (app.css in this case)
 //import './styles/app.css';
+
+
+// for each element with class btn-cons log on click data-id attr
+// wait for page to load
+document.addEventListener('DOMContentLoaded', function() {
+
+});
