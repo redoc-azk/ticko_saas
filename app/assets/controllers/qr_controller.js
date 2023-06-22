@@ -32,12 +32,13 @@ export default class extends Controller {
                                 }else{
                                     alert('Error');
                                 }
+                                html5QrcodeScanner.resume();
                             })
                             .catch(error => {
-                                alert('Error');
+                                alert('Error bv');
+                                html5QrcodeScanner.resume();
                             });
                     }
-                    html5QrcodeScanner.resume();
                 }, function(){});
         }catch (e) {
             alert(e);
