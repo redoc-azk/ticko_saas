@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Dto\ParticipantsDto;
 use App\Entity\Participants;
 use App\Repository\ParticipantsRepository;
+use App\Service\GetQRService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class AppController extends AbstractController
 {
@@ -50,12 +52,19 @@ class AppController extends AbstractController
     }
 
     #[Route('/app/list/participant/{id}', name: 'app_list_participant')]
-    public function list_participant(Participants $p): JsonResponse
+    public function list_participant(
+        Participants $p,
+        GetQRService $getQRService
+    ): JsonResponse
     {
         try{
+            $scannedAt = $p->getScannedAt();
+            $p->setScannedBy(null);
+            $p->setScannedAt($scannedAt);
             return $this->json([
                 'status' => 'success',
                 'message' => 'Participant trouvé',
+                'qr' => ($getQRService)($p)->getDataUri(),
                 'data' => $p
             ]);
         }catch (\Exception $e){
@@ -70,11 +79,13 @@ class AppController extends AbstractController
     public function confirm_participant(Participants $p, EntityManagerInterface $em): JsonResponse
     {
         try{
-            $p->setScannedAt(
-                // date time immutable
-                new \DateTimeImmutable()
-            );
+            if ($p->getScannedBy() === null){
+                $p->setScannedBy($this->getUser());
+            }
             $em->flush();
+            $scannedAt = $p->getScannedAt();
+            $p->setScannedBy(null);
+            $p->setScannedAt($scannedAt);
             return $this->json([
                 'status' => 'success',
                 'message' => 'Participant confirmé',
@@ -130,27 +141,43 @@ class AppController extends AbstractController
     #[Route('/app/scanner/{scanCode}', name: 'app_scanner_scan')]
     public function scanner_scan(
         string $scanCode,
+        Security $security,
         EntityManagerInterface $em,
         ParticipantsRepository $participantsRepository
     ): Response
     {
         $participant = $participantsRepository->findOneBy(['scanCode' => $scanCode]);
         if ($participant) {
-            $participant->setScannedAt(
-                // date time immutable
-                new \DateTimeImmutable()
-            );
+            if(!$participant->getScannedAt()){
+                $participant->setScannedBy(
+                    $security->getUser()
+                );
+            }
             $em->flush();
             return $this->json([
                 'status' => 'success',
-                'message' => 'Participant trouvé',
-                'data' => $participant
+                'message' => 'Participant trouvé'
             ]);
         } else {
             return $this->json([
                 'status' => 'error',
                 'message' => 'Participant non trouvé',
-            ]);
+            ], 404);
         }
+    }
+
+    #[Route('/app/list/participant/infos/{scanCode}', name: 'app_list_participant_infos')]
+    public function list_participant_one(
+        string $scanCode,
+        ParticipantsRepository $participantsRepository
+    ): Response
+    {
+        $participant = $participantsRepository->findOneBy(['scanCode' => $scanCode]);
+        if(!$participant){
+            return $this->redirectToRoute('app_list_participants');
+        }
+        return $this->render('app/list_participant.html.twig', [
+            'participant' => $participant
+        ]);
     }
 }

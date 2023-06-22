@@ -1,6 +1,8 @@
 import { Controller } from '@hotwired/stimulus';
 import {Html5QrcodeScanner} from "html5-qrcode";
 
+// load sound from /assets/bip.mp3
+const bip = new Audio('/assets/bip.mp3');
 
 export default class extends Controller {
     initialize() {
@@ -20,26 +22,21 @@ export default class extends Controller {
                 /* verbose= */ false);
             html5QrcodeScanner.render(
                 function(decodedText, decodedResult){
-                    // stop scanning.
-                    html5QrcodeScanner.pause();
                     // if scan code is a uuid v4 then
                     if(_checkUuid(decodedText)){
-                    // /app/scanner/{scanCode} if status is 200 then alert success else alert error
+                        // stop scanning.
+                        html5QrcodeScanner.pause();
+                        // /app/scanner/{scanCode} if status is 200 then alert success else alert error
                         fetch('/app/scanner/' + decodedText)
                             .then(response => {
                                 if(response.status === 200){
                                     // play sound success
-                                    const audio = new Audio('/assets/bip.mp3');
-                                    audio.play()
-                                        .then(() => {});
-                                    alert('Success');
+                                    bip.play();
+                                    // redirect to /app/list/participant/{id}
+                                    window.location.href = '/app/list/participant/infos/' + decodedText;
                                 }else{
-                                    alert('Error');
+                                    alert('Error Invalid QR Code');
                                 }
-                                html5QrcodeScanner.resume();
-                            })
-                            .catch(error => {
-                                alert('Error bv');
                                 html5QrcodeScanner.resume();
                             });
                     }

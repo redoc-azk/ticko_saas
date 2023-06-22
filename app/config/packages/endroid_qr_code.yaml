@@ -1,0 +1,12 @@
+endroid_qr_code:
+    default:
+        writer: Endroid\QrCode\Writer\PngWriter
+        size: 500
+        margin: 10
+        encoding: 'UTF-8'
+        errorCorrectionLevel: 'low'
+        roundBlockSizeMode: 'margin'
+        validateResult: false
+        # Add Logo
+        logoPath: '%kernel.project_dir%/public/assets/logo.png'
+        logoResizeToWidth: 150

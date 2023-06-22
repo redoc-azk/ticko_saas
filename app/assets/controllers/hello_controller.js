@@ -31,6 +31,7 @@ export default class extends Controller {
                 return response.json();
             })
             .then(function(data) {
+                console.log(data);
                 // set val nom_prenoms
                 document.querySelector('#nom_prenoms').innerHTML = data.data.nomPrenoms;
                 document.querySelector('#indicatif_telephonique').innerHTML = data.data.indicatifTelephonique;
@@ -41,6 +42,8 @@ export default class extends Controller {
                 document.querySelector('#ville').innerHTML = data.data.ville;
                 document.querySelector('#pays').innerHTML = data.data.pays;
                 document.querySelector('#inscrit_le').innerHTML = data.data.createdAt;
+                // #qr_code is an img, set src from data.qr
+                document.querySelector('#qr_code').src = data.qr;
                 // if scannedAt is not null, in div #scanned_div show scannedAt else write not scanned
                 if (data.data.scannedAt !== null) {
                     // scanned div is not hidden per default, set innerhtml
