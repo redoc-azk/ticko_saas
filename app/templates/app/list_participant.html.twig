@@ -91,6 +91,13 @@
                         {% else %}
                             <span class="label label-danger">Non scanné</span>
                         {% endif %}
+
+                        <hr>
+                        <a href="{{ path('app_scanner') }}">
+                            <button class="btn btn-block btn-success" type="button">
+                                Retour au scan
+                            </button>
+                        </a>
                     </div>
                 </turbo-frame>
             </div>
