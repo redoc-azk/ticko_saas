@@ -1,7 +1,9 @@
 {% extends 'app/_base.html.twig' %}
 
 {% block title %}Scanner{% endblock %}
-
+{% block meta_block %}
+    <meta name="turbo-visit-control" content="reload">
+{% endblock %}
 {% block body_content %}
 
     <div class="page-title"> <i class="icon-custom-left"></i>
