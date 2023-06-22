@@ -21,4 +21,4 @@ shell:
 build:
 	docker compose build
 node-cli:
-	docker run -it --rm -v "$(pwd)":/usr/src/app -w /usr/src/app node:latest sh
+	docker run -it --rm -v "$(arg):/usr/src/app" -w /usr/src/app node:latest bash
