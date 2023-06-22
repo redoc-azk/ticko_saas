@@ -28,6 +28,10 @@ export default class extends Controller {
                         fetch('/app/scanner/' + decodedText)
                             .then(response => {
                                 if(response.status === 200){
+                                    // play sound success
+                                    const audio = new Audio('/assets/bip.mp3');
+                                    audio.play()
+                                        .then(() => {});
                                     alert('Success');
                                 }else{
                                     alert('Error');
