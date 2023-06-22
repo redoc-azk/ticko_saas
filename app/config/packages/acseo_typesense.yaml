@@ -11,7 +11,7 @@ acseo_typesense:
             entity: App\Entity\Participants
             fields:
                 id:
-                    name: entity_id
+                    name: id
                     type: primary
                 #nom_prenoms
                 nom_prenoms:

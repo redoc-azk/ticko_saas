@@ -71,5 +71,7 @@ export default class extends Controller {
             })
         // simulate a click on #modal_close_btn to close the modal
         document.getElementById('modal_close_btn').click();
+        // reload the page
+        location.reload();
     }
 }

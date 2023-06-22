@@ -99,6 +99,7 @@ class AppController extends AbstractController
             if ($p->getScannedBy() === null){
                 $p->setScannedBy($this->getUser());
             }
+            $em->persist($p);
             $em->flush();
             $scannedAt = $p->getScannedAt();
             $p->setScannedBy(null);
@@ -111,7 +112,7 @@ class AppController extends AbstractController
         }catch (\Exception $e){
             return $this->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => $e->getMessage() .  ' ' . $e->getTraceAsString(),
             ]);
         }
     }
@@ -129,8 +130,10 @@ class AppController extends AbstractController
         $offset = ($page - 1) * $nbItemsPerPage;
         if(empty($term)){
             $participants = $participantsRepository->findBy([], [], $nbItemsPerPage, $offset);
+            $max_page_number = count($participants);
         }else{
             $participants = $this->search($term, $nbItemsPerPage, $page);
+            $max_page_number = count($this->search($term));
         }
         // is there a next page ?
         $is_next_page = count($participants) == $nbItemsPerPage;
@@ -144,7 +147,6 @@ class AppController extends AbstractController
         }
         // order pages
         sort($pages);
-        $max_page_number = $participantsRepository->count([]);
         $max_page_number /= 5;
         // if $max_page_number as a decimal part, then set it to the next integer
         if (intval($max_page_number) != $max_page_number) {
@@ -152,6 +154,10 @@ class AppController extends AbstractController
         }
         // set Content-Type: text/vnd.turbo-stream.html
         return $this->render('app/list_participants.html.twig', [
+            'total_count' => $participantsRepository->count([]),
+            'total_scanned' => $participantsRepository->count([]) - $participantsRepository->count([
+                'scannedAt' => null
+            ]),
             'term' => $term,
             'page' => $page,
             'pages' => $pages,

@@ -7,6 +7,26 @@
     <div class="page-title"> <i class="icon-custom-left"></i>
         <h3><span class="semi-bold">Accueil</span></h3>
     </div>
+    <div class="row 2col">
+        <div class="col-md-3 col-sm-6 spacing-bottom-sm spacing-bottom">
+            <div class="tiles blue added-margin">
+                <div class="tiles-body">
+                    <div class="tiles-title"> NOMBRE D'INSCRITS </div>
+                    <div class="heading"> <span class="animate-number" data-value="{{ total_count }}" data-animation-duration="1200">0</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 spacing-bottom-sm spacing-bottom">
+            <div class="tiles green added-margin">
+                <div class="tiles-body">
+                    <div class="tiles-title"> QR CODE SCANNES </div>
+                    <turbo-frame id="turbo-scanned_counter">
+                        <div class="heading"> <span class="animate-number" data-value="{{ total_scanned }}" data-animation-duration="1000">0</span> </div>
+                    </turbo-frame>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="grid simple ">
