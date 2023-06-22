@@ -20,5 +20,8 @@ shell:
 	docker compose exec $(arg) bash
 build:
 	docker compose build
-node-cli:
+node:
+	clear
+	# if arg is not set, use the current directory
+	[ -z "$(arg)" ] && arg="." || arg="$(arg)"
 	docker run -it --rm -v "$(arg):/usr/src/app" -w /usr/src/app node:latest bash
