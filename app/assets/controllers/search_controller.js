@@ -1,19 +1,28 @@
 import { Controller } from '@hotwired/stimulus';
-import * as Turbolinks from "@hotwired/turbo";
+import throttle from 'lodash.throttle'
 
 export default class extends Controller {
-    static targets = ['source'];
+    static targets = ['source', 'page'];
     initialize() {
         super.initialize();
+        this.submit = throttle(this.submit, 800)
     }
 
     connect() {}
 
     search(event) {
-        // submit #search-form form
-        event.preventDefault();
-        const form = document.getElementById('search-form');
-        form.submit();
+        // /app/list/participants?page=1&term=p
+        /*
+         submit #search-form form
+         */
+        console.log('search');
     }
 
+    submit() {
+        this.element.requestSubmit();
+    }
+
+    popo(){
+        console.log('popo');
+    }
 }

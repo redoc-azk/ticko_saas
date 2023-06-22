@@ -124,7 +124,7 @@ class AppController extends AbstractController
     {
         $nbItemsPerPage = 10;
         // term from post request or empty string
-        $term = $request->get('term', '');
+        $term = $request->query->get('term', '');
         $page = $request->query->get('page', 1);
         $offset = ($page - 1) * $nbItemsPerPage;
         if(empty($term)){
@@ -150,6 +150,7 @@ class AppController extends AbstractController
         if (intval($max_page_number) != $max_page_number) {
             $max_page_number = intval($max_page_number) + 1;
         }
+        // set Content-Type: text/vnd.turbo-stream.html
         return $this->render('app/list_participants.html.twig', [
             'term' => $term,
             'page' => $page,

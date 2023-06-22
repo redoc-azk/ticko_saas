@@ -23,6 +23,7 @@
         "build": "encore production --progress"
     },
     "dependencies": {
+        "lodash.throttle": "^4.1.1",
         "qr-scanner": "^1.4.2"
     }
 }

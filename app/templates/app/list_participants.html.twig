@@ -20,7 +20,6 @@
                 </div>
                     <div class="grid-body no-border">
                         <h3>Liste des  <span class="semi-bold">inscrits</span></h3>
-                        {# Search bar #}
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="input-group transparent">
@@ -29,20 +28,28 @@
                                             action="{{ path('app_list_participants') }}"
                                             method="get"
                                             data-controller="search"
+                                            data-turbo-frame="turbo-participants-list"
+                                            data-turbo-action="advance"
+                                            data-action="input->search#submit"
                                     >
-                                        <input type="hidden" name="page" value="{{ page }}" />
+                                        <input
+                                                type="hidden"
+                                                name="page" value="{{ page }}"
+                                                data-search-target="page"
+                                        />
                                         <input
                                                 type="text"
                                                 class="form-control"
                                                 placeholder="Rechercher un participant"
                                                 name="term" value="{{ term }}"
-                                                data-search-target="query"
-                                                data-action="keyup->search#search"
+                                                {#data-search-target="query"
+                                                data-action="keyup->search#search"#}
                                         >
                                     </form>
                                 </div>
                             </div>
                         </div>
+                        {# Search bar #}
                         <turbo-frame id="turbo-participants-list">
                             <table class="table no-more-tables table-hover">
                                 <thead>
