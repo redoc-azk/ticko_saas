@@ -18,90 +18,113 @@
                         <a href="javascript:;" class="remove"></a>
                     </div>
                 </div>
-                <turbo-frame id="turbo-participants-list">
                     <div class="grid-body no-border">
                         <h3>Liste des  <span class="semi-bold">inscrits</span></h3>
-                        <table class="table no-more-tables table-hover">
-                            <thead>
-                            <tr>
-                                <th style="width:16%">Nom & Prénoms</th>
-                                <th style="width:14%">Email</th>
-                                <th style="width:14%">Genre</th>
-                                <th style="width:14%">Entreprise</th>
-                                <th style="width:14%">Date d'inscription</th>
-                                <th style="width:14%">Consulter</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for p in participants %}
-                                <tr>
-                                    <td class="v-align-middle">
-                                        {{ p.NomPrenoms }}
-                                    </td>
-                                    <td class="v-align-middle">
-                                        <span class="muted">
-                                        {{ p.email }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="muted">
-                                            {{ p.sexe }}
-                                        </span>
-                                    </td>
-                                    <td><span class="muted">
-                                        <span class="muted">
-                                            {{ p.entreprise }}
-                                        </span>
-                                        </span>
-                                    </td>
-                                    <td><span class="muted">
-                                        <span class="muted">
-                                            {{ p.createdAt | date('d/m/Y H:i:s') }}
-                                        </span>
-                                        </span>
-                                    </td>
-                                    <td><span class="muted" data-controller="hello">
-                                            <button
-                                                    type="button"
-                                                    class="btn btn-success btn-cons"
-                                                    data-toggle="modal"
-                                                    data-target="#myModal"
-                                                    data-id="{{ p.id }}"
-                                                    data-hello-target="source"
-                                                    data-action="click->hello#greet"
-                                            >
-                                                Consulter
-                                            </button>
-                                        </span>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                        {# Search bar #}
                         <div class="row">
                             <div class="col-md-12">
-                                <!-- Pagination and number of result with next and prev button , scratch html -->
-                                <ul class="pagination pagination-sm">
-                                    <li class="{{ is_previous_page }}">
-                                        <a href="{{ is_previous_page ? '#' : path('app_list_participants', {'page': previous_page}) }}">&laquo;</a>
-                                    </li>
-                                    {% for i in pages %}
-                                        <li class="{{ i == page ? 'active' : '' }}">
-                                            {# path('app_list_participants') with page query parameter #}
-                                            <a href="{{ i == page ? '#' : path('app_list_participants', {'page': i}) }}">{{ i }}</a>
-                                        </li>
-                                    {% endfor %}
-
-                                    <li class="{{ is_next_page }}">
-                                        <a href="{{ is_next_page ? '#' : path('app_list_participants', {'page': next_page}) }}">&raquo;</a>
-                                    </li>
-                                </ul>
-                                {#Display Nombre de pages#}
-                                <span class="label label-success">Nombre de pages : {{ max_page_number }}</span>
+                                <div class="input-group transparent">
+                                    <form
+                                            id="search-form"
+                                            action="{{ path('app_list_participants') }}"
+                                            method="get"
+                                            data-controller="search"
+                                    >
+                                        <input type="hidden" name="page" value="{{ page }}" />
+                                        <input
+                                                type="text"
+                                                class="form-control"
+                                                placeholder="Rechercher un participant"
+                                                name="term" value="{{ term }}"
+                                                data-search-target="query"
+                                                data-action="keyup->search#search"
+                                        >
+                                    </form>
+                                </div>
                             </div>
                         </div>
+                        <turbo-frame id="turbo-participants-list">
+                            <table class="table no-more-tables table-hover">
+                                <thead>
+                                <tr>
+                                    <th style="width:16%">Nom & Prénoms</th>
+                                    <th style="width:14%">Email</th>
+                                    <th style="width:14%">Genre</th>
+                                    <th style="width:14%">Entreprise</th>
+                                    <th style="width:14%">Date d'inscription</th>
+                                    <th style="width:14%">Consulter</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for p in participants %}
+                                    <tr>
+                                        <td class="v-align-middle">
+                                            {{ p.NomPrenoms }}
+                                        </td>
+                                        <td class="v-align-middle">
+                                            <span class="muted">
+                                            {{ p.email }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="muted">
+                                                {{ p.sexe }}
+                                            </span>
+                                        </td>
+                                        <td><span class="muted">
+                                            <span class="muted">
+                                                {{ p.entreprise }}
+                                            </span>
+                                            </span>
+                                        </td>
+                                        <td><span class="muted">
+                                            <span class="muted">
+                                                {{ p.createdAt | date('d/m/Y H:i:s') }}
+                                            </span>
+                                            </span>
+                                        </td>
+                                        <td><span class="muted" data-controller="hello">
+                                                <button
+                                                        type="button"
+                                                        class="btn btn-success btn-cons"
+                                                        data-toggle="modal"
+                                                        data-target="#myModal"
+                                                        data-id="{{ p.id }}"
+                                                        data-hello-target="source"
+                                                        data-action="click->hello#greet"
+                                                >
+                                                    Consulter
+                                                </button>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!-- Pagination and number of result with next and prev button , scratch html -->
+                                    <ul class="pagination pagination-sm">
+                                        <li class="{{ is_previous_page }}">
+                                            <a href="{{ is_previous_page ? '#' : path('app_list_participants', {'page': previous_page, 'term': term ? term : ''}) }}">&laquo;</a>
+                                        </li>
+                                        {% for i in pages %}
+                                            <li class="{{ i == page ? 'active' : '' }}">
+                                                {# path('app_list_participants') with page query parameter #}
+                                                <a href="{{ i == page ? '#' : path('app_list_participants', {'page': i, 'term': term ? term : ''}) }}">{{ i }}</a>
+                                            </li>
+                                        {% endfor %}
+
+                                        <li class="{{ is_next_page }}">
+                                            <a href="{{ is_next_page ? '#' : path('app_list_participants', {'page': next_page, 'term': term ? term : ''}) }}">&raquo;</a>
+                                        </li>
+                                    </ul>
+                                    {#Display Nombre de pages#}
+                                    <span class="label label-success">Nombre de pages : {{ max_page_number }}</span>
+                                </div>
+                            </div>
+                        </turbo-frame>
                     </div>
-                </turbo-frame>
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">

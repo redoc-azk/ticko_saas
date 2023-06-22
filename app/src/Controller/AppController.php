@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use ACSEO\TypesenseBundle\Finder\TypesenseQuery;
 use App\Dto\ParticipantsDto;
 use App\Entity\Participants;
 use App\Repository\ParticipantsRepository;
@@ -17,6 +18,22 @@ use Symfony\Component\Security\Core\Security;
 
 class AppController extends AbstractController
 {
+    private $participantFinder;
+
+    public function __construct($participantFinder)
+    {
+        $this->participantFinder = $participantFinder;
+    }
+
+    public function search($searchTerm, $numberOfResults = 10, $page = 1)
+    {
+        $query =( new TypesenseQuery($searchTerm, 'nom_prenoms'))
+            ->perPage($numberOfResults)
+            ->page($page)
+        ;
+        return $this->participantFinder->query($query)->getResults();
+    }
+
     #[Route('/inscription', name: 'app_inscription')]
     public function inscription(
         EntityManagerInterface $em,
@@ -100,13 +117,23 @@ class AppController extends AbstractController
     }
 
     #[Route('/app/list/participants', name: 'app_list_participants')]
-    public function list_participants(Request $request, ParticipantsRepository $participantsRepository): Response
+    public function list_participants(
+        Request $request,
+        ParticipantsRepository $participantsRepository
+    ): Response
     {
+        $nbItemsPerPage = 10;
+        // term from post request or empty string
+        $term = $request->get('term', '');
         $page = $request->query->get('page', 1);
-        $offset = ($page - 1) * 5;
-        $participants = $participantsRepository->findBy([], [], 5, $offset);
+        $offset = ($page - 1) * $nbItemsPerPage;
+        if(empty($term)){
+            $participants = $participantsRepository->findBy([], [], $nbItemsPerPage, $offset);
+        }else{
+            $participants = $this->search($term, $nbItemsPerPage, $page);
+        }
         // is there a next page ?
-        $is_next_page = count($participantsRepository->findBy([], [], 1, $offset + 5)) > 0;
+        $is_next_page = count($participants) == $nbItemsPerPage;
         // array with actual, previous and next page if exists
         $pages = [intval($page)];
         if ($page > 1) {
@@ -118,11 +145,17 @@ class AppController extends AbstractController
         // order pages
         sort($pages);
         $max_page_number = $participantsRepository->count([]);
+        $max_page_number /= 5;
+        // if $max_page_number as a decimal part, then set it to the next integer
+        if (intval($max_page_number) != $max_page_number) {
+            $max_page_number = intval($max_page_number) + 1;
+        }
         return $this->render('app/list_participants.html.twig', [
+            'term' => $term,
             'page' => $page,
             'pages' => $pages,
             'participants' => $participants,
-            'max_page_number' => $max_page_number / 5,
+            'max_page_number' => $max_page_number,
             'previous_page' => $page > 1 ? $page - 1 : 1,
             'next_page' => $page + 1,
             'is_next_page' => $is_next_page ? "" : "disabled",

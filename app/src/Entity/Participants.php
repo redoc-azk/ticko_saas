@@ -259,4 +259,20 @@ class Participants
 
         return $this;
     }
+
+    // change string formatting of scannedAt
+    public function getScannedAtString(): ?string
+    {
+        if ($this->scannedAt === null) {
+            return null;
+        }
+        return $this->scannedAt->format('d/m/Y H:i:s');
+    }
+
+    // same for createdAt
+    public function getCreatedAtString(): ?string
+    {
+        return $this->createdAt->format('d/m/Y H:i:s');
+    }
+
 }

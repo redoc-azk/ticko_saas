@@ -1,0 +1,23 @@
+# Read the documentation: https://github.com/acseo/TypesenseBundle/blob/master/README.md
+acseo_typesense:
+    typesense:
+        url: 'http://typesense:8108'
+        key: 'xyz'
+        # Optional : add prefix to all collection names in Typesense
+        #collection_prefix: 'app_'
+    # Collection settings
+    collections:
+        participant:
+            entity: App\Entity\Participants
+            fields:
+                id:
+                    name: entity_id
+                    type: primary
+                #nom_prenoms
+                nom_prenoms:
+                    name: nom_prenoms
+                    type: string
+                created_at:
+                    name: created_at
+                    type: datetime
+            default_sorting_field: created_at

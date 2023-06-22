@@ -41,14 +41,14 @@ export default class extends Controller {
                 document.querySelector('#entreprise').innerHTML = data.data.entreprise;
                 document.querySelector('#ville').innerHTML = data.data.ville;
                 document.querySelector('#pays').innerHTML = data.data.pays;
-                document.querySelector('#inscrit_le').innerHTML = data.data.createdAt;
+                document.querySelector('#inscrit_le').innerHTML = data.data.createdAtString;
                 // #qr_code is an img, set src from data.qr
                 document.querySelector('#qr_code').src = data.qr;
                 // if scannedAt is not null, in div #scanned_div show scannedAt else write not scanned
                 if (data.data.scannedAt !== null) {
                     // scanned div is not hidden per default, set innerhtml
                     document.querySelector('#scanned_div').innerHTML =
-                        '<span class="label label-success">Scanné le ' + data.data.scannedAt + '</span>';
+                        '<span class="label label-success">Scanné le ' + data.data.scannedAtString + '</span>';
                 }else{
                     // scanned div is not hidden per default, set innerhtml
                     document.querySelector('#scanned_div').innerHTML =
