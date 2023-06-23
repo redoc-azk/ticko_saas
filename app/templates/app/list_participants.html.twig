@@ -39,36 +39,34 @@
                     </div>
                 </div>
                     <div class="grid-body no-border">
-                        <h3>Liste des  <span class="semi-bold">inscrits</span></h3>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="input-group transparent">
-                                    <form
-                                            id="search-form"
-                                            action="{{ path('app_list_participants') }}"
-                                            method="get"
-                                            data-controller="search"
-                                            data-turbo-frame="turbo-participants-list"
-                                            data-turbo-action="advance"
-                                            data-action="input->search#submit"
-                                    >
-                                        <input
-                                                type="hidden"
-                                                name="page" value="{{ page }}"
-                                                data-search-target="page"
-                                        />
-                                        <input
-                                                type="text"
-                                                class="form-control"
-                                                placeholder="Rechercher un participant"
-                                                name="term" value="{{ term }}"
-                                                {#data-search-target="query"
+                        <h3 style="display: inline;">Liste des  <span class="semi-bold">inscrits</span></h3>
+                        &nbsp;&nbsp;&nbsp;
+                        <a href="{{ path('app_participant_excel') }}" target="_blank">
+                            <button type="button" class="btn btn-default btn-cons">Default</button>
+                        </a>
+                        <form
+                                id="search-form"
+                                action="{{ path('app_list_participants') }}"
+                                method="get"
+                                data-controller="search"
+                                data-turbo-frame="turbo-participants-list"
+                                data-turbo-action="advance"
+                                data-action="input->search#submit"
+                        >
+                            <input
+                                    type="hidden"
+                                    name="page" value="{{ page }}"
+                                    data-search-target="page"
+                            />
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    placeholder="Rechercher un participant"
+                                    name="term" value="{{ term }}"
+                                    {#data-search-target="query"
                                                 data-action="keyup->search#search"#}
-                                        >
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                            >
+                        </form>
                         {# Search bar #}
                         <turbo-frame id="turbo-participants-list">
                             <table class="table no-more-tables table-hover">
@@ -217,6 +215,8 @@
                                         id="scan_btn"
                                         type="button"
                                         class="btn btn-primary"
+                                        data-turbo-frame="turbo-scanned_counter"
+                                        data-turbo-action="advance"
                                         data-action="click->participantmodal#scanParticipant"
                                 >
                                     Confirmer le scan

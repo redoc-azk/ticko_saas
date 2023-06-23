@@ -1,2 +1,4 @@
 /.idea
 /.docker
+#ignore all xlsx files in app/public
+app/public/**/*.xlsx

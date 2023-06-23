@@ -220,4 +220,68 @@ class AppController extends AbstractController
             'participant' => $participant
         ]);
     }
+
+    #[Route('/app/participant/excel', name: 'app_participant_excel')]
+    public function excel(
+        ParticipantsRepository $repo,
+    ){
+        $actualDate = date('d-m-Y H:i:s');
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $spreadsheet
+            ->getProperties()
+            ->setCreator('Ticko')
+            ->setTitle('Export - ' . $actualDate)
+            ->setDescription('
+                Export des participants
+            ');
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->getStyle('A1:M1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FF0000');
+        $sheet->getStyle('A1:M1')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_WHITE);
+        $sheet->getStyle('A1:M1')->getFont()->setBold(true);
+        $sheet->setCellValue('A1', 'N.');
+        $sheet->setCellValue('B1', 'Nom & Prénoms');
+        $sheet->setCellValue('C1', 'Email');
+        $sheet->setCellValue('D1', 'Indicatif Téléphone');
+        $sheet->setCellValue('E1', 'Téléphone');
+        $sheet->setCellValue('F1', 'Genre');
+        $sheet->setCellValue('G1', 'Profession');
+        $sheet->setCellValue('H1', 'Entreprise');
+        $sheet->setCellValue('I1', 'Ville');
+        $sheet->setCellValue('J1', 'Pays');
+        $sheet->setCellValue('K1', 'Scanné le');
+        $sheet->setCellValue('L1', 'Mail envoyé le');
+        $sheet->setCellValue('M1', 'Inscription le');
+        $i = 2;
+        foreach(
+            $repo->findAll() as $participant
+        ){
+            $sheet->setCellValue('A' . $i, $participant->getId());
+            $sheet->setCellValue('B' . $i, $participant->getNomPrenoms());
+            $sheet->setCellValue('C' . $i, $participant->getEmail());
+            $sheet->setCellValue('D' . $i, $participant->getIndicatifTelephonique());
+            $sheet->setCellValue('E' . $i, $participant->getNumero());
+            $sheet->setCellValue('F' . $i, $participant->getSexe());
+            $sheet->setCellValue('G' . $i, $participant->getProfession());
+            $sheet->setCellValue('H' . $i, $participant->getEntreprise());
+            $sheet->setCellValue('I' . $i, $participant->getVille());
+            $sheet->setCellValue('J' . $i, $participant->getPays());
+            $sheet->setCellValue('K' . $i, $participant->getScannedAt() ? $participant->getScannedAt()->format('d-m-Y H:i:s') : 'NULL');
+            $sheet->setCellValue('L' . $i, $participant->getMailSendedAt() ? $participant->getMailSendedAt()->format('d-m-Y H:i:s') : 'NULL');
+            $sheet->setCellValue('M' . $i, $participant->getCreatedAt() ? $participant->getCreatedAt()->format('d-m-Y H:i:s') : '');
+            $i++;
+        }
+
+        $filename = "export-{$actualDate}.xlsx";
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save($filename);
+
+        return new Response(
+            file_get_contents($filename),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition' => 'attachment;filename="' . $filename . '"'
+            ]
+        );
+    }
 }
