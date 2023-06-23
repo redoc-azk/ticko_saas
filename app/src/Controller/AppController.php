@@ -63,9 +63,8 @@ class AppController extends AbstractController
     #[Route('/app', name: 'app_home')]
     public function index(): Response
     {
-        return $this->render('app/index.html.twig', [
-            'controller_name' => 'AppController',
-        ]);
+        // redirect to app_list_participants
+        return $this->redirectToRoute('app_list_participants');
     }
 
     #[Route('/app/list/participant/{id}', name: 'app_list_participant')]
