@@ -5,7 +5,7 @@ export default class extends Controller {
     static targets = ['source', 'page'];
     initialize() {
         super.initialize();
-        this.submit = throttle(this.submit, 100)
+        this.submit = throttle(this.submit, 500)
     }
 
     connect() {}
